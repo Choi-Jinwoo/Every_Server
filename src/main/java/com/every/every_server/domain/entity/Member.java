@@ -13,8 +13,12 @@ import javax.persistence.*;
 @Setter
 public class Member {
     @Id
-    @Column(name = "id", length = 45)
-    private String id;
+    @Column(name = "idx")
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private Integer idx;
+
+    @Column(name = "email", unique = true, nullable = false, length = 50)
+    private String email;
 
     @Column(name="pw", nullable = false, length = 200)
     private String pw;
@@ -22,10 +26,7 @@ public class Member {
     @Column(name = "name", nullable = false, length = 45)
     private String name;
 
-    @Column(name = "email", nullable = false, length = 50)
-    private String email;
-
-    @Column(name = "phone", nullable = false, length = 20)
+    @Column(name = "phone", unique = true, nullable = false, length = 20)
     private String phone;
 
     @JsonProperty("birth_year")

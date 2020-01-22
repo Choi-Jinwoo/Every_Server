@@ -16,8 +16,8 @@ public class Worker {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer idx;
 
-    @JsonProperty("member_id")
-    @JoinColumn(name = "member_id", nullable = false)
+    @JsonProperty("member_idx")
+    @JoinColumn(name = "member_idx", unique = true, nullable = false)
     @OneToOne
     private Member member;
 
