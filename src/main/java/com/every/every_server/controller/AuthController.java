@@ -3,14 +3,13 @@ package com.every.every_server.controller;
 import com.every.every_server.domain.vo.http.Response;
 import com.every.every_server.domain.vo.http.ResponseData;
 import com.every.every_server.domain.vo.member.MemberLoginVO;
-import com.every.every_server.domain.vo.member.MemberRegisterVO;
+import com.every.every_server.domain.vo.member.StudentRegisterVO;
+import com.every.every_server.domain.vo.member.WorkerRegisterVO;
 import com.every.every_server.service.auth.AuthServiceImpl;
 import com.every.every_server.service.jwt.JwtServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
@@ -50,13 +49,30 @@ public class AuthController {
     }
 
     /**
-     * 회원가입 API
+     * 학생 회원가입 API
      */
-    @PostMapping("/register")
+    @PostMapping("/register/student")
     @ResponseStatus(HttpStatus.CREATED)
-    public Response register(@RequestBody @Valid MemberRegisterVO memberRegisterVO) {
+    public Response studentRegister(@RequestBody @Valid StudentRegisterVO studentRegisterVO) {
         try {
-            authService.register(memberRegisterVO);
+            authService.studentRegister(studentRegisterVO);
+            return new Response(HttpStatus.CREATED, "회원 가입 성공.");
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+    }
+
+    /**
+     * 직장인 회원가입 API
+     */
+    @PostMapping("/register/worker")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Response workerRegister(@RequestBody @Valid WorkerRegisterVO workerRegisterVO) {
+        try {
+            authService.workerRegister(workerRegisterVO);
             return new Response(HttpStatus.CREATED, "회원 가입 성공.");
         } catch (HttpClientErrorException e) {
             throw e;

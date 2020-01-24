@@ -6,10 +6,14 @@ import lombok.Getter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * 학생 가입 VO
+ */
 @Getter
-public class MemberRegisterVO {
+public class StudentRegisterVO {
     @Email
     @NotBlank
     private String email;
@@ -25,5 +29,10 @@ public class MemberRegisterVO {
     private String phone;
 
     @JsonProperty("birth_year")
+    @NotNull
     private Integer birthYear;
+
+    @JsonProperty("school_id")
+    @NotNull
+    private String schoolId;
 }
