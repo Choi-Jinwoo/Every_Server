@@ -13,7 +13,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import sun.java2d.pipe.NullPipe;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -30,7 +32,7 @@ public class SchoolServiceImpl implements SchoolService{
      * @return 학교 리스트
      */
     @Override
-    public List<SchoolVO> getSchoolList(String reqSchoolName) {
+    public List<SchoolVO> getSchoolList(String reqSchoolName) throws Exception {
         Url apiURL = new Url("https://open.neis.go.kr/hub/schoolInfo");
         ModelMapper modelMapper = new ModelMapper();
 
@@ -77,13 +79,13 @@ public class SchoolServiceImpl implements SchoolService{
 
                 return schoolList;
             } else {
-                throw new Error();
+                throw new Exception();
             }
         } catch (NullPointerException e) {
-            throw e;
+            List<SchoolVO> schoolList = new ArrayList<>();
+            return schoolList;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+            throw e;
         }
     }
 }

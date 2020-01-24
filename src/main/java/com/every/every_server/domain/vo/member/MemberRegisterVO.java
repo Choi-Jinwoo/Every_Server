@@ -2,12 +2,13 @@ package com.every.every_server.domain.vo.member;
 
 import com.every.every_server.constant.DateConstant;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+@Getter
 public class MemberRegisterVO {
     @Email
     @NotBlank

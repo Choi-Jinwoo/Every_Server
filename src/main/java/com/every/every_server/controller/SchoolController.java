@@ -7,6 +7,7 @@ import com.every.every_server.service.school.SchoolServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +27,19 @@ public class SchoolController {
     @ResponseStatus(HttpStatus.OK)
     public Response getSchoolList(@RequestParam String query) {
         List<SchoolVO> schoolList = new ArrayList<>();
-        schoolList = schoolService.getSchoolList(query);
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("schools", schoolList);
-        return new ResponseData(HttpStatus.OK, "학교 목록 조회 성공.", data);
+        try {
+            schoolList = schoolService.getSchoolList(query);
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("schools", schoolList);
+            return new ResponseData(HttpStatus.OK, "학교 목록 조회 성공.", data);
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+
     }
 }
