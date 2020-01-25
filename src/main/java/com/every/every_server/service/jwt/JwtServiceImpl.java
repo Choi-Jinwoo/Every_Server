@@ -77,7 +77,8 @@ public class JwtServiceImpl implements JwtService{
             throw new HttpClientErrorException(HttpStatus.GONE, "토큰 만료.");
         } catch (SignatureException e) {
             throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 위조.");
-        } catch (JwtException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
         }
     }

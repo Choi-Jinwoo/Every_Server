@@ -3,6 +3,7 @@ package com.every.every_server.controller;
 import com.every.every_server.domain.vo.http.Response;
 import com.every.every_server.domain.vo.http.ResponseData;
 import com.every.every_server.domain.vo.school.SchoolVO;
+import com.every.every_server.service.jwt.JwtServiceImpl;
 import com.every.every_server.service.school.SchoolServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ import java.util.Map;
 public class SchoolController {
     @Autowired
     private SchoolServiceImpl schoolService;
+    @Autowired
+    private JwtServiceImpl jwtService;
 
     /**
      * 학교 조회 API
@@ -40,6 +43,17 @@ public class SchoolController {
             e.printStackTrace();
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
         }
+    }
 
+    @GetMapping("/meal")
+    @ResponseStatus(HttpStatus.OK)
+    public Response getSchoolMeals(@RequestHeader String token) {
+        try {
+            jwtService.validateToken(token);
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return null;
     }
 }
