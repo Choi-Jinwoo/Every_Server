@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class MemberLoginVO {
     @Email
+    @NotBlank
     private String email;
 
     @NotBlank
