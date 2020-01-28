@@ -47,13 +47,16 @@ public class SchoolController {
 
     @GetMapping("/meal")
     @ResponseStatus(HttpStatus.OK)
-    public Response getSchoolMeals(@RequestHeader String token) {
+    public Response getSchoolMeals(@RequestHeader String token) throws Exception {
         try {
-            jwtService.validateToken(token);
+            Integer memberIdx = jwtService.validateToken(token);
+            schoolService.getSchoolMeals(memberIdx);
+        } catch (HttpClientErrorException e) {
+            throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             throw e;
         }
-
         return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.every.every_server.domain.vo.school;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,4 +22,15 @@ public class SchoolVO {
 
     @JsonProperty("school_location")
     private String schoolLocation; // 학교 소재지(위치)
+
+    public SchoolVO(JsonObject jsonSchool) {
+        try {
+            this.schoolId = jsonSchool.get("SD_SCHUL_CODE").getAsString();
+            this.officeId = jsonSchool.get("ATPT_OFCDC_SC_CODE").getAsString();
+            this.schoolName = jsonSchool.get("SCHUL_NM").getAsString();
+            this.schoolLocation = jsonSchool.get("LCTN_SC_NM").getAsString();
+        } catch (NullPointerException e) {
+            throw e;
+        }
+    }
 }
