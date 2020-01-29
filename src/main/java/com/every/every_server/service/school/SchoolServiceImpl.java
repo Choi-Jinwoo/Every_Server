@@ -21,9 +21,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class SchoolServiceImpl implements SchoolService{
@@ -40,7 +40,7 @@ public class SchoolServiceImpl implements SchoolService{
      */
     @Override
     public SchoolVO getSchoolBySchoolId(String reqSchoolId) throws Exception {
-        Url apiURL = new Url("https://open.neis.go.kr/hub/mealServiceDietInfo");
+        Url apiURL = new Url("https://open.neis.go.kr/hub/schoolInfo");
         // Query 추가
         apiURL.addQuery("KEY", neisKey);
         apiURL.addQuery("SD_SCHUL_CODE", reqSchoolId);
@@ -56,6 +56,7 @@ public class SchoolServiceImpl implements SchoolService{
 
             return school;
         } catch (NullPointerException e) {
+            e.printStackTrace();
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "없는 학교.");
         }  catch (Exception e) {
             throw e;
@@ -103,7 +104,7 @@ public class SchoolServiceImpl implements SchoolService{
      * @return 학교 급식 리스트
      */
     @Override
-    public List<SchoolMealVO> getSchoolMeals(Integer memberIdx) throws Exception {
+    public List<SchoolMealVO> getSchoolMeals(Integer memberIdx, int year, int month) throws Exception {
         Optional<Member> member = memberRepo.findById(memberIdx);
 
         // 회원이 존재하지 않을 경우
@@ -120,30 +121,37 @@ public class SchoolServiceImpl implements SchoolService{
 
         String schoolId = student.getSchoolId();
         try {
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, year);
+            cal.set(Calendar.MONTH, month - 1);
+            cal.set(Calendar.DATE, 1);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("YYYYMMDD");
+            String dateFormatYYYYMM = dateFormat.format(cal.getTime()).substring(0, 6);
+            // URL 생성
             SchoolVO school = getSchoolBySchoolId(schoolId);
             Url apiURL = new Url("https://open.neis.go.kr/hub/mealServiceDietInfo");
             apiURL.addQuery("KEY", neisKey);
             apiURL.addQuery("SD_SCHUL_CODE", school.getSchoolId());
             apiURL.addQuery("ATPT_OFCDC_SC_CODE", school.getOfficeId());
+            apiURL.addQuery("MLSV_YMD", dateFormatYYYYMM);
             apiURL.addQuery("Type", "json");
-            // TODO 기간 설정하기(query) & Json파싱
-//
-//            JsonObject object =ApiRequest.getRequest(apiURL);
-//            JsonArray schoolInfo = (JsonArray) object.get("schoolInfo");
-//
-//            JsonObject rowObj = (JsonObject) schoolInfo.get(1);
-//            JsonArray row = (JsonArray) rowObj.get("row");
-//            List<SchoolVO> schoolList = new ArrayList<>();
-//            for (int i = 0; i < row.size(); i++) {
-//                JsonObject jsonSchool = (JsonObject) row.get(i);
-//                SchoolVO school = new SchoolVO(jsonSchool);
-//                schoolList.add(school);
-//            }
-//            return schoolList;
+
+            JsonObject object =ApiRequest.getRequest(apiURL);
+            JsonArray schoolInfo = (JsonArray) object.get("mealServiceDietInfo");
+            JsonObject rowObj = (JsonObject) schoolInfo.get(1);
+            JsonArray row = (JsonArray) rowObj.get("row");
+            List<SchoolMealVO> mealList = new ArrayList<>();
+            for (int i = 0; i < row.size(); i++) {
+                JsonObject jsonMeal = (JsonObject) row.get(i);
+                SchoolMealVO meal = new SchoolMealVO(jsonMeal);
+                mealList.add(meal);
+            }
+            return mealList;
+        } catch (NullPointerException e) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "해당 급식 정보 없음.");
         } catch (Exception e) {
             throw e;
         }
-
-        return null;
     }
 }

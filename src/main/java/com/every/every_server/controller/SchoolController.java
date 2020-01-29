@@ -2,6 +2,7 @@ package com.every.every_server.controller;
 
 import com.every.every_server.domain.vo.http.Response;
 import com.every.every_server.domain.vo.http.ResponseData;
+import com.every.every_server.domain.vo.school.SchoolMealVO;
 import com.every.every_server.domain.vo.school.SchoolVO;
 import com.every.every_server.service.jwt.JwtServiceImpl;
 import com.every.every_server.service.school.SchoolServiceImpl;
@@ -47,16 +48,23 @@ public class SchoolController {
 
     @GetMapping("/meal")
     @ResponseStatus(HttpStatus.OK)
-    public Response getSchoolMeals(@RequestHeader String token) throws Exception {
+    public Response getSchoolMeals(@RequestHeader String token,
+                                   @RequestParam int year,
+                                   @RequestParam int month) throws Exception {
+        List<SchoolMealVO> mealList = new ArrayList<>();
+
         try {
             Integer memberIdx = jwtService.validateToken(token);
-            schoolService.getSchoolMeals(memberIdx);
+            mealList = schoolService.getSchoolMeals(memberIdx, year, month);
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("meals", mealList);
+            return new ResponseData(HttpStatus.OK, "급식 목록 조회 성공.", data);
         } catch (HttpClientErrorException e) {
             throw e;
         } catch (Exception e) {
             e.printStackTrace();
-            throw e;
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
         }
-        return null;
     }
 }

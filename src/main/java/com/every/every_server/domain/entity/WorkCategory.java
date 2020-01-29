@@ -1,6 +1,7 @@
 package com.every.every_server.domain.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "work_category")
 @Getter
 @Setter
+@NoArgsConstructor
 public class WorkCategory {
     @Id
     @Column(name = "idx")
