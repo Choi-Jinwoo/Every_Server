@@ -22,4 +22,10 @@ public class GlobalExceptionHandler {
     protected Response handleWebExchangeBindException(WebExchangeBindException e) {
         return new Response(HttpStatus.BAD_REQUEST, "검증 오류.");
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return new Response(HttpStatus.BAD_REQUEST, "검증 오류.");
+    }
 }

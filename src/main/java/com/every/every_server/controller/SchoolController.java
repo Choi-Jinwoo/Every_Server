@@ -16,6 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 학교
+ */
+@CrossOrigin
 @RestController
 @RequestMapping("/school")
 public class SchoolController {

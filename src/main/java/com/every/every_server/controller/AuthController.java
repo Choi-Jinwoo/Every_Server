@@ -19,6 +19,7 @@ import java.util.Map;
 /**
  * 회원 인증
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
