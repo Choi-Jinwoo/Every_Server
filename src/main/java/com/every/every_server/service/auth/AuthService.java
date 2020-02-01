@@ -8,4 +8,6 @@ public interface AuthService {
     public Integer login(MemberLoginVO memberLiLoginVO);
     public Integer studentRegister(StudentRegisterVO student);
     public Integer workerRegister(WorkerRegisterVO worker);
+    public String checkEmail(String email);
+    public String checkPhone(String phone);
 }

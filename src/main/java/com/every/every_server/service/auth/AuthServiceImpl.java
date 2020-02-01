@@ -113,6 +113,38 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
+    /**
+     * 이메일 확인
+     * @return email
+     */
+    @Override
+    public String checkEmail(String email) {
+        if (email == null) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "검증 오류.");
+        }
+
+        Member member = memberRepo.findByEmail(email);
+        if (member != null) {
+            throw new HttpClientErrorException(HttpStatus.CONFLICT, "중복된 이메일.");
+        }
+
+        return email;
+    }
+
+    @Override
+    public String checkPhone(String phone) {
+        if (phone == null) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "검증 오류.");
+        }
+
+        Member member = memberRepo.findByPhone(phone);
+        if (member != null) {
+            throw new HttpClientErrorException(HttpStatus.CONFLICT, "중복된 전화번호.");
+        }
+
+        return phone;
+    }
+
     private boolean validateBirthYear(Integer birthYear) {
         int currentYear = LocalDate.now().getYear();
         if (currentYear < birthYear) {

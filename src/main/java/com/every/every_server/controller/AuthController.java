@@ -82,4 +82,38 @@ public class AuthController {
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
         }
     }
+
+    /**
+     * 이메일 확인 API
+     */
+    @GetMapping("/check/email")
+    @ResponseStatus(HttpStatus.OK)
+    public Response checkEmail(@RequestParam String email) {
+        try {
+            authService.checkEmail(email);
+            return new Response(HttpStatus.OK, "이메일 중복 확인.");
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+    }
+
+    /**
+     * 전화번호 확인 API
+     */
+    @GetMapping("/check/phone")
+    @ResponseStatus(HttpStatus.OK)
+    public Response checkPhone(@RequestParam String phone) {
+        try {
+            authService.checkPhone(phone);
+            return new Response(HttpStatus.OK, "전화번호 중복 확인.");
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+    }
 }
