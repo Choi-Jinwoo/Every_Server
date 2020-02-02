@@ -119,7 +119,7 @@ public class AuthServiceImpl implements AuthService{
      */
     @Override
     public String checkEmail(String email) {
-        if (email == null) {
+        if (email == null || email.trim().length() == 0) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "검증 오류.");
         }
 
@@ -133,7 +133,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public String checkPhone(String phone) {
-        if (phone == null) {
+        if (phone == null  || phone.trim().length() == 0) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "검증 오류.");
         }
 

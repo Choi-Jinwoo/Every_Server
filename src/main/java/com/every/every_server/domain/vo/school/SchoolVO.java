@@ -28,8 +28,11 @@ public class SchoolVO {
             this.schoolId = jsonSchool.get("SD_SCHUL_CODE").getAsString();
             this.officeId = jsonSchool.get("ATPT_OFCDC_SC_CODE").getAsString();
             this.schoolName = jsonSchool.get("SCHUL_NM").getAsString();
-            this.schoolLocation = jsonSchool.get("LCTN_SC_NM").getAsString();
-        } catch (NullPointerException e) {
+            // Cause UnsupportedOperationException
+            this.schoolLocation = jsonSchool.get("ORG_RDNMA").getAsString();
+        } catch (UnsupportedOperationException e) {
+            return;
+        }  catch (NullPointerException e) {
             throw e;
         }
     }

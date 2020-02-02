@@ -77,7 +77,7 @@ public class SchoolServiceImpl implements SchoolService{
         apiURL.addQuery("SCHUL_NM", URLEncoder.encode(reqSchoolName, "UTF-8"));
         apiURL.addQuery("Type", "json");
         apiURL.addQuery("pSize", "1000");
-
+        System.out.println(apiURL.getBase());
         try {
             JsonObject object =ApiRequest.getRequest(apiURL);
             JsonArray schoolInfo = (JsonArray) object.get("schoolInfo");
