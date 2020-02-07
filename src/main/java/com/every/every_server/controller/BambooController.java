@@ -1,6 +1,5 @@
 package com.every.every_server.controller;
 
-import com.every.every_server.domain.entity.BambooPost;
 import com.every.every_server.domain.vo.bamboo.post.BambooPostVO;
 import com.every.every_server.domain.vo.http.Response;
 import com.every.every_server.domain.vo.http.ResponseData;
@@ -28,6 +27,7 @@ public class BambooController {
     /**
      * 게시글 목록 조회
      */
+    @GetMapping("/post")
     public Response getBambooPosts(@RequestHeader String token) {
         List<BambooPostVO> postList = new ArrayList<>();
 
