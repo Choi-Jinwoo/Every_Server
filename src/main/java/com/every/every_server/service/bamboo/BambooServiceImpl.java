@@ -8,6 +8,7 @@ import com.every.every_server.domain.repository.BambooReplyRepo;
 import com.every.every_server.domain.repository.MemberRepo;
 import com.every.every_server.domain.repository.StudentRepo;
 import com.every.every_server.domain.vo.bamboo.post.BambooPostVO;
+import com.every.every_server.domain.vo.bamboo.post.BambooWritePostVO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -54,5 +55,25 @@ public class BambooServiceImpl implements BambooService {
         }
 
         return postList;
+    }
+
+    @Override
+    public boolean writeBambooPost(Integer memberIdx, BambooWritePostVO bambooWritePostVO) {
+        Optional<Member> member = memberRepo.findById(memberIdx);
+        if (!member.isPresent()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "없는 회원.");
+        }
+
+        Student student = studentRepo.findByMember(member.get());
+        if (student == null) {
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+        }
+
+        ModelMapper modelMapper = new ModelMapper();
+        BambooPost post = modelMapper.map(bambooWritePostVO, BambooPost.class);
+        post.setStudent(student);
+
+        bambooPostRepo.save(post);
+        return  true;
     }
 }

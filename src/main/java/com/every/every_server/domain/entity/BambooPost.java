@@ -37,6 +37,6 @@ public class BambooPost {
     @JsonProperty("created_at")
     @CreatedDate
     @Column(name = "created_at")
-    private String createdAt;
+    private Date createdAt = new Date();
 }
 

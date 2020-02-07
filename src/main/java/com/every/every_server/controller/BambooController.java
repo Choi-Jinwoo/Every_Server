@@ -1,6 +1,7 @@
 package com.every.every_server.controller;
 
 import com.every.every_server.domain.vo.bamboo.post.BambooPostVO;
+import com.every.every_server.domain.vo.bamboo.post.BambooWritePostVO;
 import com.every.every_server.domain.vo.http.Response;
 import com.every.every_server.domain.vo.http.ResponseData;
 import com.every.every_server.service.bamboo.BambooServiceImpl;
@@ -38,6 +39,26 @@ public class BambooController {
             Map<String, Object> data = new HashMap<>();
             data.put("posts", postList);
             return new ResponseData(HttpStatus.OK, "대나무숲 목록 조회 성공.", data);
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+    }
+
+    /**
+     * 게시글 작성
+     */
+    @PostMapping("/post")
+    public Response writeBambooPost(
+            @RequestHeader String token,
+            @RequestBody BambooWritePostVO bambooWritePostVO) {
+        try {
+            Integer memberIdx = jwtService.validateToken(token);
+            bambooService.writeBambooPost(memberIdx, bambooWritePostVO);
+
+            return new Response(HttpStatus.CREATED, "대나무숲 작성 성공.");
         } catch (HttpClientErrorException e) {
             throw e;
         } catch (Exception e) {
