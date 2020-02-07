@@ -19,7 +19,7 @@ public class Student {
 
     @JsonProperty("member_idx")
     @JoinColumn(name = "member_idx", unique = true, nullable = false)
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private Member member;
 
     @JsonProperty("school_id")

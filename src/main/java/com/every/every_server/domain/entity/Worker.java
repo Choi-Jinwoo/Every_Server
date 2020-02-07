@@ -22,7 +22,7 @@ public class Worker {
 
     @JsonProperty("member_idx")
     @JoinColumn(name = "member_idx", unique = true, nullable = false)
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private Member member;
 
     @JsonProperty("work_place")
@@ -30,7 +30,7 @@ public class Worker {
     private String workPlace;
 
     @JsonProperty("work_category")
-    @JoinColumn(name = "work_category", nullable = false)
+    @JoinColumn(name = "work_category", nullable = true)
     @ManyToOne
     private WorkCategory workCategory;
 }
