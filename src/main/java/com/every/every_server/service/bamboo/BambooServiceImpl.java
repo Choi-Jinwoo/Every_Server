@@ -1,6 +1,7 @@
 package com.every.every_server.service.bamboo;
 
 import com.every.every_server.domain.entity.BambooPost;
+import com.every.every_server.domain.entity.BambooReply;
 import com.every.every_server.domain.entity.Member;
 import com.every.every_server.domain.entity.Student;
 import com.every.every_server.domain.repository.BambooPostRepo;
@@ -9,14 +10,15 @@ import com.every.every_server.domain.repository.MemberRepo;
 import com.every.every_server.domain.repository.StudentRepo;
 import com.every.every_server.domain.vo.bamboo.post.BambooPostVO;
 import com.every.every_server.domain.vo.bamboo.post.BambooWritePostVO;
+import com.every.every_server.domain.vo.bamboo.reply.BambooReplyVO;
+import com.every.every_server.domain.vo.bamboo.reply.BambooWriteReplyVO;
+import com.every.every_server.service.member.MemberServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,17 +33,18 @@ public class BambooServiceImpl implements BambooService {
     private StudentRepo studentRepo;
     @Autowired
     private MemberRepo memberRepo;
+    @Autowired
+    private MemberServiceImpl memberService;
 
     @Override
     public List<BambooPostVO> getBambooPosts(Integer memberIdx) {
-        Optional<Member> member = memberRepo.findById(memberIdx);
-        if (!member.isPresent()) {
-            throw  new HttpClientErrorException(HttpStatus.NOT_FOUND, "회원 없음.");
-        }
-
-        Student student = studentRepo.findByMember(member.get());
-        if (student == null) {
-            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+        try {
+            Student student = memberService.getStudentByMemberIdx(memberIdx);
+            if (student == null) {
+                throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+            }
+        } catch (Exception e) {
+            throw e;
         }
 
         List<BambooPost> rawPostList = bambooPostRepo.findAll();
@@ -59,14 +62,14 @@ public class BambooServiceImpl implements BambooService {
 
     @Override
     public boolean writeBambooPost(Integer memberIdx, BambooWritePostVO bambooWritePostVO) {
-        Optional<Member> member = memberRepo.findById(memberIdx);
-        if (!member.isPresent()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "없는 회원.");
-        }
-
-        Student student = studentRepo.findByMember(member.get());
-        if (student == null) {
-            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+        Student student;
+        try {
+            student = memberService.getStudentByMemberIdx(memberIdx);
+            if (student == null) {
+                throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+            }
+        } catch (Exception e) {
+            throw e;
         }
 
         ModelMapper modelMapper = new ModelMapper();
@@ -76,4 +79,60 @@ public class BambooServiceImpl implements BambooService {
         bambooPostRepo.save(post);
         return  true;
     }
+
+    @Override
+    public List<BambooReplyVO> getBambooReplies(Integer memberIdx, Integer postIdx) {
+        Student student;
+        try {
+            student = memberService.getStudentByMemberIdx(memberIdx);
+            if (student == null) {
+                throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+
+        Optional<BambooPost> post = bambooPostRepo.findById(postIdx);
+        if (!post.isPresent()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "게시글 없음.");
+        }
+
+        List<BambooReply> rawReplyList = bambooReplyRepo.findAllByBambooPost(post.get());
+        List<BambooReplyVO> replyList = new ArrayList<>();
+
+        ModelMapper modelMapper = new ModelMapper();
+        for (int i = 0; i < rawReplyList.size(); i++) {
+            BambooReplyVO reply = modelMapper.map(rawReplyList.get(i), BambooReplyVO.class);
+            reply.setCreatedAt(rawReplyList.get(i).getCreatedAt().toString());
+            reply.setStudentIdx(rawReplyList.get(i).getStudent().getIdx());
+            replyList.add(reply);
+        }
+
+        return replyList;
+    }
+
+    @Override
+    public boolean writeBambooReply(Integer memberIdx, BambooWriteReplyVO bambooWriteReplyVO) {
+        Student student;
+        try {
+            student = memberService.getStudentByMemberIdx(memberIdx);
+            if (student == null) {
+                throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+
+        Optional<BambooPost> post = bambooPostRepo.findById(bambooWriteReplyVO.getPost());
+        if (!post.isPresent()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "게시글 없음.");
+        }
+
+        BambooReply reply = new BambooReply();
+        reply.setContent(bambooWriteReplyVO.getContent());
+        reply.setBambooPost(post.get());
+        reply.setStudent(student);
+        return true;
+    }
+
 }

@@ -1,7 +1,10 @@
 package com.every.every_server.controller;
 
+import com.every.every_server.domain.entity.BambooReply;
 import com.every.every_server.domain.vo.bamboo.post.BambooPostVO;
 import com.every.every_server.domain.vo.bamboo.post.BambooWritePostVO;
+import com.every.every_server.domain.vo.bamboo.reply.BambooReplyVO;
+import com.every.every_server.domain.vo.bamboo.reply.BambooWriteReplyVO;
 import com.every.every_server.domain.vo.http.Response;
 import com.every.every_server.domain.vo.http.ResponseData;
 import com.every.every_server.service.bamboo.BambooServiceImpl;
@@ -65,5 +68,48 @@ public class BambooController {
             e.printStackTrace();
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
         }
+    }
+
+    /**
+     * 댓글 목록 조회
+     */
+    @GetMapping("/reply")
+    public Response getBambooReplys(
+            @RequestHeader String token,
+            @RequestParam Integer post) {
+        try {
+            Integer memberIdx = jwtService.validateToken(token);
+            List<BambooReplyVO> replyList = bambooService.getBambooReplies(memberIdx, post);
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("replies", replyList);
+            return new ResponseData(HttpStatus.OK, "대나무숲 댓글 조회 성공.", data);
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+    }
+
+    /**
+     * 댓글 작성
+     */
+    @PostMapping("/reply")
+    public Response writeBambooReply(
+            @RequestHeader String token,
+            @RequestBody BambooWriteReplyVO bambooWriteReplyVO) {
+        try {
+            Integer memberIdx = jwtService.validateToken(token);
+            bambooService.writeBambooReply(memberIdx, bambooWriteReplyVO);
+
+            return new Response(HttpStatus.CREATED, "대나무숲 댓글 작성 성공.");
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+
     }
 }
