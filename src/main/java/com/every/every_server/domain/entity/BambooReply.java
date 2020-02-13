@@ -36,5 +36,5 @@ public class BambooReply {
 
     @JsonProperty("created_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private Date createdAt = new Date();
 }

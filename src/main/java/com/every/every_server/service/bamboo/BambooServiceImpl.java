@@ -155,6 +155,10 @@ public class BambooServiceImpl implements BambooService {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "댓글 없음.");
         }
 
+        if (reply.get().getStudent().getIdx() != student.getIdx()) {
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+        }
+
         reply.get().setContent(bambooModifyReplyVO.getContent());
         bambooReplyRepo.save(reply.get());
         return true;
