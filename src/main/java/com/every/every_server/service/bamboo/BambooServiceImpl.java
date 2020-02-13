@@ -2,7 +2,6 @@ package com.every.every_server.service.bamboo;
 
 import com.every.every_server.domain.entity.BambooPost;
 import com.every.every_server.domain.entity.BambooReply;
-import com.every.every_server.domain.entity.Member;
 import com.every.every_server.domain.entity.Student;
 import com.every.every_server.domain.repository.BambooPostRepo;
 import com.every.every_server.domain.repository.BambooReplyRepo;
@@ -10,6 +9,7 @@ import com.every.every_server.domain.repository.MemberRepo;
 import com.every.every_server.domain.repository.StudentRepo;
 import com.every.every_server.domain.vo.bamboo.post.BambooPostVO;
 import com.every.every_server.domain.vo.bamboo.post.BambooWritePostVO;
+import com.every.every_server.domain.vo.bamboo.reply.BambooModifyReplyVO;
 import com.every.every_server.domain.vo.bamboo.reply.BambooReplyVO;
 import com.every.every_server.domain.vo.bamboo.reply.BambooWriteReplyVO;
 import com.every.every_server.service.member.MemberServiceImpl;
@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -132,7 +133,30 @@ public class BambooServiceImpl implements BambooService {
         reply.setContent(bambooWriteReplyVO.getContent());
         reply.setBambooPost(post.get());
         reply.setStudent(student);
+
+        bambooReplyRepo.save(reply);
         return true;
     }
 
+    @Override
+    public boolean modifyBambooReply(Integer memberIdx, Integer idx, BambooModifyReplyVO bambooModifyReplyVO) {
+        Student student;
+        try {
+            student = memberService.getStudentByMemberIdx(memberIdx);
+            if (student == null) {
+                throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+
+        Optional<BambooReply> reply = bambooReplyRepo.findById(idx);
+        if (!reply.isPresent()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "댓글 없음.");
+        }
+
+        reply.get().setContent(bambooModifyReplyVO.getContent());
+        bambooReplyRepo.save(reply.get());
+        return true;
+    }
 }
