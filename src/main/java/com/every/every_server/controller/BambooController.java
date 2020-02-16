@@ -1,6 +1,5 @@
 package com.every.every_server.controller;
 
-import com.every.every_server.domain.entity.BambooReply;
 import com.every.every_server.domain.vo.bamboo.post.BambooPostVO;
 import com.every.every_server.domain.vo.bamboo.post.BambooWritePostVO;
 import com.every.every_server.domain.vo.bamboo.reply.BambooModifyReplyVO;
@@ -127,6 +126,26 @@ public class BambooController {
             bambooService.modifyBambooReply(memberIdx, idx, bambooModifyReplyVO);
 
             return new Response(HttpStatus.OK, "대나무숲 댓글 수정 성공.");
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+    }
+
+    /**
+     * 댓글 삭제
+     */
+    @DeleteMapping("/reply/{idx}")
+    public Response deleteBambooReply(
+            @RequestHeader String token,
+            @PathVariable("idx") Integer idx) {
+        try {
+            Integer memberIdx = jwtService.validateToken(token);
+            bambooService.deleteBambooReply(memberIdx, idx);
+
+            return new Response(HttpStatus.OK, "대나무숲 댓글 삭제 성공.");
         } catch (HttpClientErrorException e) {
             throw e;
         } catch (Exception e) {

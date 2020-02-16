@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -26,12 +28,14 @@ public class BambooReply {
 
     @JsonProperty("student_idx")
     @JoinColumn(name = "student_idx", nullable = false)
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Student student;
 
     @JsonProperty("bamboo_post_idx")
     @JoinColumn(name = "bamboo_post_idx", nullable = false)
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private BambooPost bambooPost;
 
     @JsonProperty("created_at")

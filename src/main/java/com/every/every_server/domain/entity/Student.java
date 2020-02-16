@@ -2,6 +2,8 @@ package com.every.every_server.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -19,7 +21,8 @@ public class Student {
 
     @JsonProperty("member_idx")
     @JoinColumn(name = "member_idx", unique = true, nullable = false)
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @JsonProperty("school_id")

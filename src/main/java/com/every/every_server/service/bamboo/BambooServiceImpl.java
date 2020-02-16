@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -133,8 +132,7 @@ public class BambooServiceImpl implements BambooService {
         reply.setContent(bambooWriteReplyVO.getContent());
         reply.setBambooPost(post.get());
         reply.setStudent(student);
-
-        bambooReplyRepo.save(reply);
+bambooReplyRepo.save(reply);
         return true;
     }
 
@@ -161,6 +159,31 @@ public class BambooServiceImpl implements BambooService {
 
         reply.get().setContent(bambooModifyReplyVO.getContent());
         bambooReplyRepo.save(reply.get());
+        return true;
+    }
+
+    @Override
+    public boolean deleteBambooReply(Integer memberIdx, Integer idx) {
+        Student student;
+        try {
+            student = memberService.getStudentByMemberIdx(memberIdx);
+            if (student == null) {
+                throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+
+        Optional<BambooReply> reply = bambooReplyRepo.findById(idx);
+        if (!reply.isPresent()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "댓글 없음.");
+        }
+
+        if (reply.get().getStudent().getIdx() != student.getIdx()) {
+            throw  new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+        }
+
+        bambooReplyRepo.delete(reply.get());
         return true;
     }
 }

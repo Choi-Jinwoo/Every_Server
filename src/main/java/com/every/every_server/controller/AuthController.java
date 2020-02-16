@@ -1,5 +1,8 @@
 package com.every.every_server.controller;
 
+import com.every.every_server.domain.entity.Member;
+import com.every.every_server.domain.entity.Student;
+import com.every.every_server.domain.entity.Worker;
 import com.every.every_server.domain.vo.http.Response;
 import com.every.every_server.domain.vo.http.ResponseData;
 import com.every.every_server.domain.vo.member.MemberLoginVO;
@@ -7,6 +10,7 @@ import com.every.every_server.domain.vo.member.StudentRegisterVO;
 import com.every.every_server.domain.vo.member.WorkerRegisterVO;
 import com.every.every_server.service.auth.AuthServiceImpl;
 import com.every.every_server.service.jwt.JwtServiceImpl;
+import com.every.every_server.service.member.MemberServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +30,8 @@ public class AuthController {
     @Autowired
     private AuthServiceImpl authService;
     @Autowired
+    private MemberServiceImpl memberService;
+    @Autowired
     private JwtServiceImpl jwtService;
 
     /**
@@ -37,9 +43,12 @@ public class AuthController {
         try {
             Integer memberIdx = authService.login(memberLoginVO);
             String token = jwtService.createToken(memberIdx);
-
+            Boolean isStudent = memberService.getStudentByMemberIdx(memberIdx) != null ? true : false;
+            Boolean isWorker = memberService.getWorkerByMemberIdx(memberIdx) != null ? true : false;
             Map<String, Object> data = new HashMap<>();
             data.put("x-access-token", token);
+            data.put("is_student", isStudent);
+            data.put("is_worker", isWorker);
             return new ResponseData(HttpStatus.OK, "로그인 성공.", data);
         } catch (HttpClientErrorException e) {
             throw e;

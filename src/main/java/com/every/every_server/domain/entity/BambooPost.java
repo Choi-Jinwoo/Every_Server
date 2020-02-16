@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -32,6 +34,7 @@ public class BambooPost {
     @JsonProperty("student_idx")
     @JoinColumn(name = "student_idx", nullable = true)
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Student student;
 
     @JsonProperty("created_at")
