@@ -47,7 +47,7 @@ public class BambooServiceImpl implements BambooService {
             throw e;
         }
 
-        List<BambooPost> rawPostList = bambooPostRepo.findAll();
+        List<BambooPost> rawPostList = bambooPostRepo.findAllByOrderByCreatedAtDesc();
         List<BambooPostVO> postList = new ArrayList<>();
 
         ModelMapper modelMapper = new ModelMapper();
