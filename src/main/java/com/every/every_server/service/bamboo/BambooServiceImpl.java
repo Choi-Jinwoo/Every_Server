@@ -30,10 +30,6 @@ public class BambooServiceImpl implements BambooService {
     @Autowired
     private BambooReplyRepo bambooReplyRepo;
     @Autowired
-    private StudentRepo studentRepo;
-    @Autowired
-    private MemberRepo memberRepo;
-    @Autowired
     private MemberServiceImpl memberService;
 
     @Override
