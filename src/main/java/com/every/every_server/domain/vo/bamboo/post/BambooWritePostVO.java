@@ -11,10 +11,6 @@ import javax.validation.constraints.Size;
  */
 @Getter
 public class BambooWritePostVO {
-    @NotBlank
-    @Size(max = 40)
-    private String title;
-
     @NotNull
     @Size(max = 950)
     private String content;

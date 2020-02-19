@@ -11,7 +11,6 @@ import lombok.Setter;
 @Setter
 public class BambooPostVO {
     private Integer idx;
-    private String title;
     private String content;
     @JsonProperty("created_at")
     private String createdAt;

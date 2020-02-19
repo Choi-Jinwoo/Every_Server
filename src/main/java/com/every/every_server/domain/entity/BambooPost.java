@@ -25,9 +25,6 @@ public class BambooPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
 
-    @Column(name = "title", nullable = false, length = 45)
-    private String title;
-
     @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
