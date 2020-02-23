@@ -15,4 +15,5 @@ public interface BambooService {
     public boolean writeBambooReply(Integer memberIdx, BambooWriteReplyVO bambooWriteReplyVO);
     public boolean modifyBambooReply(Integer memberIdx, Integer idx, BambooModifyReplyVO bambooModifyReplyVO);
     public boolean deleteBambooReply(Integer memberIdx, Integer idx);
+    public BambooPostVO getBambooPost(Integer memberIdx, Integer postIdx);
 }

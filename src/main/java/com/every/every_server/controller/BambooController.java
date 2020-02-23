@@ -51,6 +51,29 @@ public class BambooController {
     }
 
     /**
+     * 게시글 목록 조회
+     */
+    @GetMapping("/post/{idx}")
+    public Response getBambooPost(
+            @RequestHeader String token,
+            @PathVariable("idx") Integer idx) {
+
+        try {
+            Integer memberIdx = jwtService.validateToken(token);
+            BambooPostVO post = bambooService.getBambooPost(memberIdx, idx);
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("post", post);
+            return new ResponseData(HttpStatus.OK, "대나무숲 조회 성공.", data);
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+    }
+
+    /**
      * 게시글 작성
      */
     @PostMapping("/post")

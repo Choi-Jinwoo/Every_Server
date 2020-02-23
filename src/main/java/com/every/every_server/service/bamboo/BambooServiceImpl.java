@@ -57,6 +57,27 @@ public class BambooServiceImpl implements BambooService {
     }
 
     @Override
+    public BambooPostVO getBambooPost(Integer memberIdx, Integer postIdx) {
+        try {
+            Student student = memberService.getStudentByMemberIdx(memberIdx);
+            if (student == null) {
+                throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음.");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+
+        Optional<BambooPost> rawPost = bambooPostRepo.findById(postIdx);
+        if (!rawPost.isPresent()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "게시글 없음.");
+        }
+
+        ModelMapper modelMapper = new ModelMapper();
+        BambooPostVO post = modelMapper.map(rawPost.get(), BambooPostVO.class);
+        return post;
+    }
+
+    @Override
     public boolean writeBambooPost(Integer memberIdx, BambooWritePostVO bambooWritePostVO) {
         Student student;
         try {
@@ -182,4 +203,5 @@ bambooReplyRepo.save(reply);
         bambooReplyRepo.delete(reply.get());
         return true;
     }
+
 }
