@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface BambooReplyRepo extends JpaRepository<BambooReply, Integer> {
-    public List<BambooReply> findAllByBambooPost(BambooPost post);
+    public List<BambooReply> findAllByBambooPostOrderByCreatedAtDesc(BambooPost post);
 }
