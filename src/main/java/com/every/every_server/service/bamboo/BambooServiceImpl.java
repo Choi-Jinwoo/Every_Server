@@ -114,7 +114,7 @@ public class BambooServiceImpl implements BambooService {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "게시글 없음.");
         }
 
-        List<BambooReply> rawReplyList = bambooReplyRepo.findAllByBambooPost(post.get());
+        List<BambooReply> rawReplyList = bambooReplyRepo.findAllByBambooPostOrderByCreatedAtDesc(post.get());
         List<BambooReplyVO> replyList = new ArrayList<>();
 
         ModelMapper modelMapper = new ModelMapper();
