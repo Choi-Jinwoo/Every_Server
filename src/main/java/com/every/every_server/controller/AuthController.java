@@ -43,12 +43,12 @@ public class AuthController {
         try {
             Integer memberIdx = authService.login(memberLoginVO);
             String token = jwtService.createToken(memberIdx);
-            Boolean isStudent = memberService.getStudentByMemberIdx(memberIdx) != null ? true : false;
-            Boolean isWorker = memberService.getWorkerByMemberIdx(memberIdx) != null ? true : false;
+            Student student = memberService.getStudentByMemberIdx(memberIdx);
+            Worker worker = memberService.getWorkerByMemberIdx(memberIdx);
             Map<String, Object> data = new HashMap<>();
             data.put("x-access-token", token);
-            data.put("is_student", isStudent);
-            data.put("is_worker", isWorker);
+            data.put("student_idx", student == null ? null : student.getIdx());
+            data.put("worker_idx", worker == null ? null : worker.getIdx());
             return new ResponseData(HttpStatus.OK, "로그인 성공.", data);
         } catch (HttpClientErrorException e) {
             throw e;
