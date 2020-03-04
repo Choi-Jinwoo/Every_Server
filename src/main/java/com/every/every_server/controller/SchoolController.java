@@ -52,14 +52,12 @@ public class SchoolController {
 
     @GetMapping("/meal")
     @ResponseStatus(HttpStatus.OK)
-    public Response getSchoolMeals(@RequestHeader String token,
-                                   @RequestParam int year,
-                                   @RequestParam int month) throws Exception {
-        List<SchoolMealVO> mealList = new ArrayList<>();
+    public Response getSchoolMeals(@RequestHeader String token) throws Exception {
+        List<SchoolMealVO> mealList;
 
         try {
             Integer memberIdx = jwtService.validateToken(token);
-            mealList = schoolService.getSchoolMeals(memberIdx, year, month);
+            mealList = schoolService.getSchoolMeals(memberIdx);
 
             Map<String, Object> data = new HashMap<>();
             data.put("meals", mealList);

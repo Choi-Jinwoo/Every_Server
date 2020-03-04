@@ -99,7 +99,7 @@ public class SchoolServiceImpl implements SchoolService{
      * @return 학교 급식 리스트
      */
     @Override
-    public List<SchoolMealVO> getSchoolMeals(Integer memberIdx, int year, int month) throws Exception {
+    public List<SchoolMealVO> getSchoolMeals(Integer memberIdx) throws Exception {
         Optional<Member> member = memberRepo.findById(memberIdx);
 
         // 회원이 존재하지 않을 경우
@@ -116,13 +116,11 @@ public class SchoolServiceImpl implements SchoolService{
 
         String schoolId = student.getSchoolId();
         try {
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.YEAR, year);
-            cal.set(Calendar.MONTH, month - 1);
-            cal.set(Calendar.DATE, 1);
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("YYYYMMDD");
-            String dateFormatYYYYMM = dateFormat.format(cal.getTime()).substring(0, 6);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            Calendar cal = Calendar.getInstance();
+            String dateFormatYYYYMM = dateFormat.format(cal.getTime());
+
             // URL 생성
             SchoolVO school = getSchoolBySchoolId(schoolId);
             Url apiURL = new Url("https://open.neis.go.kr/hub/mealServiceDietInfo");
@@ -132,11 +130,13 @@ public class SchoolServiceImpl implements SchoolService{
             apiURL.addQuery("MLSV_YMD", dateFormatYYYYMM);
             apiURL.addQuery("Type", "json");
 
+            // JSON Parsing
             JsonObject object =ApiRequest.getRequest(apiURL);
             JsonArray schoolInfo = (JsonArray) object.get("mealServiceDietInfo");
             JsonObject rowObj = (JsonObject) schoolInfo.get(1);
             JsonArray row = (JsonArray) rowObj.get("row");
             List<SchoolMealVO> mealList = new ArrayList<>();
+
             for (int i = 0; i < row.size(); i++) {
                 JsonObject jsonMeal = (JsonObject) row.get(i);
                 SchoolMealVO meal = new SchoolMealVO(jsonMeal);

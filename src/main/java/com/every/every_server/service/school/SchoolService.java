@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface SchoolService {
     public List<SchoolVO> getSchoolList(String schoolName) throws Exception;
-    public List<SchoolMealVO> getSchoolMeals(Integer memberIdx, int year, int month) throws Exception;
+    public List<SchoolMealVO> getSchoolMeals(Integer memberIdx) throws Exception;
     public SchoolVO getSchoolBySchoolId(String reqSchoolId) throws Exception;
 }
