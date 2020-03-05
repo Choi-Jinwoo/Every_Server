@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface BambooReplyRepo extends JpaRepository<BambooReply, Integer> {
     public List<BambooReply> findAllByBambooPostOrderByCreatedAtDesc(BambooPost post);
+    public Long countByBambooPost(BambooPost post);
 }

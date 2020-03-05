@@ -11,6 +11,7 @@ import com.every.every_server.service.bamboo.BambooServiceImpl;
 import com.every.every_server.service.jwt.JwtServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -32,12 +33,14 @@ public class BambooController {
      * 게시글 목록 조회
      */
     @GetMapping("/post")
-    public Response getBambooPosts(@RequestHeader String token) {
+    public Response getBambooPosts(
+            @RequestHeader String token,
+            @RequestParam @Nullable String order) {
         List<BambooPostVO> postList = new ArrayList<>();
 
         try {
             Integer memberIdx = jwtService.validateToken(token);
-            postList = bambooService.getBambooPosts(memberIdx);
+            postList = bambooService.getBambooPosts(memberIdx, order);
 
             Map<String, Object> data = new HashMap<>();
             data.put("posts", postList);

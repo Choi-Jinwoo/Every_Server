@@ -5,8 +5,6 @@ import com.every.every_server.domain.entity.BambooReply;
 import com.every.every_server.domain.entity.Student;
 import com.every.every_server.domain.repository.BambooPostRepo;
 import com.every.every_server.domain.repository.BambooReplyRepo;
-import com.every.every_server.domain.repository.MemberRepo;
-import com.every.every_server.domain.repository.StudentRepo;
 import com.every.every_server.domain.vo.bamboo.post.BambooPostVO;
 import com.every.every_server.domain.vo.bamboo.post.BambooWritePostVO;
 import com.every.every_server.domain.vo.bamboo.reply.BambooModifyReplyVO;
@@ -19,9 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BambooServiceImpl implements BambooService {
@@ -33,7 +29,7 @@ public class BambooServiceImpl implements BambooService {
     private MemberServiceImpl memberService;
 
     @Override
-    public List<BambooPostVO> getBambooPosts(Integer memberIdx) {
+    public List<BambooPostVO> getBambooPosts(Integer memberIdx, String order) {
         try {
             Student student = memberService.getStudentByMemberIdx(memberIdx);
             if (student == null) {
@@ -53,6 +49,25 @@ public class BambooServiceImpl implements BambooService {
             postList.add(post);
         }
 
+        if (order != null && order.equals("hit")) {
+            Collections.sort(postList, new Comparator<BambooPostVO>() {
+                @Override
+                public int compare(BambooPostVO o1, BambooPostVO o2) {
+                    Optional<BambooPost> o1BambooPost = bambooPostRepo.findById((o1.getIdx()));
+                    Optional<BambooPost> o2BambooPost = bambooPostRepo.findById((o2.getIdx()));
+
+                    Long o1ReplyCnt = bambooReplyRepo.countByBambooPost(o1BambooPost.get());
+                    Long o2ReplyCnt = bambooReplyRepo.countByBambooPost(o2BambooPost.get());
+
+                    if (o1ReplyCnt < o2ReplyCnt) {
+                        return 1;
+                    } else if(o1ReplyCnt > o2ReplyCnt) {
+                        return -1;
+                    }
+                    return 0;
+                }
+            });
+        }
         return postList;
     }
 
