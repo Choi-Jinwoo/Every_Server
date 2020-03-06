@@ -7,35 +7,41 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "bamboo_post")
+@Table(name="schedule")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BambooPost {
+public class Schedule {
     @Id
-    @Column(name = "idx")
+    @Column(name="idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
 
-    @Column(name = "content", nullable = false, length = 1000)
+    @Column(name = "title", nullable = false, length = 255)
+    private String title;
+
+    @Lob
+    @Column(name = "content", nullable = false)
     private String content;
 
-    @JsonProperty("student_idx")
-    @JoinColumn(name = "student_idx", nullable = true)
-    @ManyToOne
+    @JsonProperty("start_date")
+    @Column(name="start_date")
+    private LocalDate startDate;
+
+    @JsonProperty("end_date")
+    @Column(name="end_date")
+    private LocalDate endDate;
+
+    @JsonProperty("member_idx")
+    @JoinColumn(name="member_idx", nullable = false)
+
+    @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Student student;
-
-    @JsonProperty("created_at")
-    @CreatedDate
-    @Column(name = "created_at")
-    private Date createdAt = new Date();
+    private Member member;
 }
-
