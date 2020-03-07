@@ -164,7 +164,7 @@ public class BambooServiceImpl implements BambooService {
         reply.setContent(bambooWriteReplyVO.getContent());
         reply.setBambooPost(post.get());
         reply.setStudent(student);
-bambooReplyRepo.save(reply);
+        bambooReplyRepo.save(reply);
         return true;
     }
 
