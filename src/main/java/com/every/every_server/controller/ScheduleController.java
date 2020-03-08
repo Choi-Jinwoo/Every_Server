@@ -77,4 +77,21 @@ public class ScheduleController {
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
         }
     }
+
+    @DeleteMapping("/{idx}")
+    public Response deleteSchedule(
+            @RequestHeader String token,
+            @PathVariable("idx") Integer idx) {
+        try {
+            Integer memberIdx = jwtService.validateToken(token);
+            scheduleService.deleteSchedule(memberIdx, idx);
+
+            return new Response(HttpStatus.OK, " 일정 삭제 성공.");
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+    }
 }

@@ -10,4 +10,5 @@ public interface ScheduleService {
     public List<ScheduleVO> getSchedules(Integer memberIdx);
     public Boolean createSchedule(Integer memberIdx, ScheduleCreateVO scheduleCreateVO);
     public Boolean modifySchedule(Integer memberIdx, Integer idx, ScheduleModifyVO scheduleModifyVO);
+    public Boolean deleteSchedule(Integer memberIdx, Integer idx);
 }

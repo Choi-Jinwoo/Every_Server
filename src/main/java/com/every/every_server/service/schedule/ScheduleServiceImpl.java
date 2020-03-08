@@ -70,12 +70,37 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw  new HttpClientErrorException(HttpStatus.NOT_FOUND, "일정 없음");
         }
 
+        if (schedule.get().getMember().getIdx() != member.getIdx()) {
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음");
+        }
+
         schedule.get().setTitle(scheduleModifyVO.getTitle() != null ? scheduleModifyVO.getTitle() : schedule.get().getTitle());
         schedule.get().setContent(scheduleModifyVO.getContent() != null ? scheduleModifyVO.getContent() : schedule.get().getContent());
         schedule.get().setStartDate(scheduleModifyVO.getStartDate() != null ? scheduleModifyVO.getStartDate() : schedule.get().getStartDate());
         schedule.get().setEndDate(scheduleModifyVO.getEndDate() != null ? scheduleModifyVO.getEndDate() : schedule.get().getEndDate());
 
         scheduleRepo.save(schedule.get());
+        return true;
+    }
+
+    @Override
+    public Boolean deleteSchedule(Integer memberIdx, Integer idx) {
+        Member member = memberService.getMember(memberIdx);
+
+        if (member == null) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "회원 없음.");
+        }
+
+        Optional<Schedule> schedule = scheduleRepo.findById(idx);
+        if (!schedule.isPresent()) {
+            throw  new HttpClientErrorException(HttpStatus.NOT_FOUND, "일정 없음");
+        }
+
+        if (schedule.get().getMember().getIdx() != member.getIdx()) {
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음");
+        }
+
+        scheduleRepo.delete(schedule.get());
         return true;
     }
 }
