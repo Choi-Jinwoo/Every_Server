@@ -35,7 +35,7 @@ public class ScheduleController {
             ScheduleVO schedule = scheduleService.getSchedule(memberIdx, idx);
 
             Map<String, Object> data = new HashMap<>();
-            data.put("schedules", schedule);
+            data.put("schedule", schedule);
             return new ResponseData(HttpStatus.OK, "일정 조회 성공", data);
         } catch (HttpClientErrorException e) {
             throw e;
