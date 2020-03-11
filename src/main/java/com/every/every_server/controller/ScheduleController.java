@@ -26,6 +26,25 @@ public class ScheduleController {
     @Autowired
     private JwtServiceImpl jwtService;
 
+    @GetMapping("/{idx}")
+    public Response getSchedule(
+            @RequestHeader String token,
+            @PathVariable("idx") Integer idx) {
+        try {
+            Integer memberIdx = jwtService.validateToken(token);
+            ScheduleVO schedule = scheduleService.getSchedule(memberIdx, idx);
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("schedules", schedule);
+            return new ResponseData(HttpStatus.OK, "일정 조회 성공", data);
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+    }
+
     @GetMapping
     public Response getSchedules(@RequestHeader String token) {
         try {

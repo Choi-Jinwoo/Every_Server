@@ -25,6 +25,28 @@ public class ScheduleServiceImpl implements ScheduleService {
     private MemberServiceImpl memberService;
 
     @Override
+    public ScheduleVO getSchedule(Integer memberIdx, Integer idx) {
+        Member member = memberService.getMember(memberIdx);
+        if (member == null) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "회원 없음.");
+        }
+        Optional<Schedule> rawSchedule = scheduleRepo.findById(idx);
+        if (!rawSchedule.isPresent()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "게시글 없음.");
+        }
+
+        if (rawSchedule.get().getMember().getIdx() != member.getIdx()) {
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "권한 없음");
+        }
+
+        ModelMapper modelMapper = new ModelMapper();
+        ScheduleVO schedule = modelMapper.map(rawSchedule.get(), ScheduleVO.class);
+        schedule.setStartDate(rawSchedule.get().getStartDate().toString());
+        schedule.setEndDate(rawSchedule.get().getEndDate().toString());
+        return schedule;
+    }
+
+    @Override
     public List<ScheduleVO> getSchedules(Integer memberIdx) {
         Member member = memberService.getMember(memberIdx);
         if (member == null) {
