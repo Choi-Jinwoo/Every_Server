@@ -50,6 +50,23 @@ public class SchoolController {
         }
     }
 
+    /**
+     * 학교 조회 (idx)
+     */
+    @GetMapping("/{school_id}")
+    public Response getSchool(@PathVariable("school_id") String schoolId) {
+        try {
+            SchoolVO school = schoolService.getSchoolBySchoolId(schoolId);
+            Map<String, Object> data = new HashMap<>();
+            data.put("school", school);
+            return new ResponseData(HttpStatus.OK, "학교 조회 성공.", data);
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류.");
+        }
+    }
     @GetMapping("/meal")
     @ResponseStatus(HttpStatus.OK)
     public Response getSchoolMeals(@RequestHeader String token) throws Exception {
