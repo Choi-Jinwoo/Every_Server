@@ -51,7 +51,6 @@ public class SchoolServiceImpl implements SchoolService{
 
             return school;
         } catch (NullPointerException e) {
-            e.printStackTrace();
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "없는 학교.");
         }  catch (Exception e) {
             throw e;
