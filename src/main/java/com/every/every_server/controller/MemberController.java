@@ -2,8 +2,7 @@ package com.every.every_server.controller;
 
 import com.every.every_server.domain.vo.http.Response;
 import com.every.every_server.domain.vo.http.ResponseData;
-import com.every.every_server.domain.vo.member.MemberPublicVO;
-import com.every.every_server.service.bamboo.BambooServiceImpl;
+import com.every.every_server.domain.vo.member.StudentPublicVO;
 import com.every.every_server.service.jwt.JwtServiceImpl;
 import com.every.every_server.service.member.MemberServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,8 @@ public class MemberController {
             @PathVariable("idx") Integer idx) {
 
         try {
-            Integer memberIdx = jwtService.validateToken(token);
-            MemberPublicVO member = memberService.getMemberByStudentIdx(idx);
+            jwtService.validateToken(token);
+            StudentPublicVO member = memberService.getMemberByStudentIdx(idx);
 
             Map<String, Object> data = new HashMap<>();
             data.put("member", member);

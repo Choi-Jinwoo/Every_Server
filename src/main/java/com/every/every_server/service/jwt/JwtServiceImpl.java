@@ -3,7 +3,6 @@ package com.every.every_server.service.jwt;
 import com.every.every_server.constant.DateConstant;
 import com.every.every_server.domain.entity.Member;
 import com.every.every_server.domain.repository.MemberRepo;
-import com.every.every_server.domain.vo.member.MemberPublicVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
