@@ -19,7 +19,6 @@ public class StudentRegisterVO {
     private String email;
 
     @NotBlank
-    @Size(min = 8, max = 25)
     private String pw;
 
     @NotBlank
