@@ -63,7 +63,7 @@ public class AuthController {
      */
     @PostMapping("/register/student")
     @ResponseStatus(HttpStatus.CREATED)
-    public Response studentRegister(@RequestBody @Valid StudentRegisterVO studentRegisterVO) {
+    public Response studentRegister(@RequestBody StudentRegisterVO studentRegisterVO) {
         try {
             authService.studentRegister(studentRegisterVO);
             return new Response(HttpStatus.CREATED, "회원 가입 성공.");
@@ -80,7 +80,7 @@ public class AuthController {
      */
     @PostMapping("/register/worker")
     @ResponseStatus(HttpStatus.CREATED)
-    public Response workerRegister(@RequestBody @Valid WorkerRegisterVO workerRegisterVO) {
+    public Response workerRegister(@RequestBody  WorkerRegisterVO workerRegisterVO) {
         try {
             authService.workerRegister(workerRegisterVO);
             return new Response(HttpStatus.CREATED, "회원 가입 성공.");
